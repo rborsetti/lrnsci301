@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#050828" />
+<title>Crew Console · Bring Them Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<div class="cosmos" aria-hidden="true">
+  <div class="stars stars-1"></div>
+  <div class="stars stars-2"></div>
+  <div class="stars stars-3"></div>
+  <div class="nebula nebula-violet"></div>
+  <div class="nebula nebula-cyan"></div>
+  <div class="nebula nebula-rose"></div>
+  <svg class="earth" viewBox="0 0 200 200">
+    <defs>
+      <radialGradient id="earth-body" cx="32%" cy="28%"><stop offset="0%" stop-color="#bae6fd"/><stop offset="35%" stop-color="#38bdf8"/><stop offset="75%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#020617"/></radialGradient>
+      <radialGradient id="earth-halo" cx="50%" cy="50%"><stop offset="78%" stop-color="rgba(125,211,252,0)"/><stop offset="100%" stop-color="rgba(125,211,252,0.32)"/></radialGradient>
+      <clipPath id="earth-clip"><circle cx="100" cy="100" r="80"/></clipPath>
+    </defs>
+    <circle cx="100" cy="100" r="98" fill="url(#earth-halo)"/>
+    <circle cx="100" cy="100" r="80" fill="url(#earth-body)"/>
+    <g clip-path="url(#earth-clip)">
+      <g fill="#16a34a" opacity="0.78">
+        <path d="M40 70 Q55 60 70 75 T100 80 Q90 95 80 90 T55 95 Q42 88 40 70 Z"/>
+        <path d="M115 60 Q135 55 145 75 Q150 90 138 100 Q128 95 120 88 Q112 78 115 60 Z"/>
+        <path d="M82 120 Q100 115 118 128 Q120 140 105 148 Q88 148 80 138 Q75 128 82 120 Z"/>
+        <ellipse cx="140" cy="135" rx="12" ry="7"/>
+      </g>
+      <g fill="#fef3c7" opacity="0.35"><ellipse cx="65" cy="55" rx="28" ry="5"/><ellipse cx="125" cy="115" rx="22" ry="4"/><ellipse cx="95" cy="155" rx="20" ry="3"/></g>
+    </g>
+  </svg>
+  <svg class="asteroid asteroid-1" viewBox="0 0 100 100"><polygon points="50,4 78,16 94,46 86,80 56,96 22,88 6,58 12,24" fill="#3a3640" stroke="#0c0a14" stroke-width="2"/><circle cx="42" cy="38" r="6" fill="#1a1620"/><circle cx="64" cy="62" r="4" fill="#1a1620"/><circle cx="32" cy="68" r="3" fill="#1a1620"/></svg>
+  <svg class="asteroid asteroid-2" viewBox="0 0 100 100"><polygon points="50,8 84,28 92,62 70,92 28,90 8,60 18,22" fill="#2a2630" stroke="#0c0a14" stroke-width="2"/><circle cx="48" cy="46" r="5" fill="#15121a"/><circle cx="68" cy="68" r="3" fill="#15121a"/></svg>
+  <svg class="asteroid asteroid-3" viewBox="0 0 100 100"><polygon points="50,2 82,18 96,54 78,86 38,96 12,72 4,40 22,12" fill="#3a3640" stroke="#0c0a14" stroke-width="2"/><circle cx="38" cy="42" r="8" fill="#1a1620"/><circle cx="68" cy="60" r="5" fill="#1a1620"/><circle cx="48" cy="76" r="4" fill="#1a1620"/></svg>
+  <svg class="asteroid asteroid-4" viewBox="0 0 100 100"><polygon points="50,10 80,24 88,58 62,88 24,82 10,52 22,18" fill="#2e2a36" stroke="#0c0a14" stroke-width="2"/><circle cx="46" cy="50" r="4" fill="#15121a"/></svg>
+  <svg class="asteroid asteroid-5" viewBox="0 0 100 100"><polygon points="50,6 78,22 90,56 72,86 34,90 12,64 16,28" fill="#332f3a" stroke="#0c0a14" stroke-width="2"/><circle cx="44" cy="42" r="6" fill="#1a1620"/><circle cx="64" cy="64" r="3" fill="#1a1620"/></svg>
+  <div class="scanlines"></div>
+</div>
+
+<div class="container">
+  <header class="center" style="margin-bottom: 20px;">
+    <div class="eyebrow">crew console</div>
+    <h1>Bring Them Home</h1>
+    <p class="muted" style="margin-top: 6px; font-size: 13px; letter-spacing: 0.08em;">
+      MISSION <span class="mono" id="partyCode" style="color: var(--cyan);"></span>
+    </p>
+  </header>
+
+  <!-- SETUP -->
+  <div class="card" id="setupCard">
+    <span class="corners-2"></span>
+    <div class="card-header">
+      <h2>Set up your crew</h2>
+    </div>
+    <p>Name your crew and list every astronaut on this device.</p>
+    <div class="col" style="margin-top: 14px; gap: 10px;">
+      <input type="text" id="teamName" maxlength="40" placeholder="Crew name (e.g. Apollo)" autocomplete="off" />
+      <div id="playerList" class="col"></div>
+      <button class="ghost tiny" id="addPlayerBtn" style="align-self: flex-start;">+ Add player</button>
+    </div>
+    <div style="margin-top: 16px;">
+      <button class="primary big" id="lockInBtn">⊹ Ready</button>
+    </div>
+    <p id="setupError" class="notice error" style="display:none"></p>
+  </div>
+
+  <!-- LOBBY -->
+  <div class="card" id="lobbyCard" style="display:none">
+    <span class="corners-2"></span>
+    <div class="card-header">
+      <h2 id="lobbyTeamName">…</h2>
+      <span class="eyebrow" style="opacity: 0.6;">standby</span>
+    </div>
+    <div id="lobbyPlayers" class="player-chips"></div>
+    <p class="muted" style="margin-top: 10px; font-style: italic;">Awaiting Mission Control launch …</p>
+    <div style="margin-top: 14px;">
+      <button class="ghost tiny" id="leaveBtn">⊹ Change crew</button>
+    </div>
+  </div>
+
+  <!-- BRIEFING (no dismiss button. master controls) -->
+  <div class="card briefing" id="briefingCard" style="display:none">
+    <span class="corners-2"></span>
+    <div class="card-header">
+      <h2>Mission briefing</h2>
+      <span class="eyebrow" style="opacity:0.6">Inspired by Apollo 13</span>
+    </div>
+    <p class="briefing-quote">"Houston, we've had a problem."</p>
+    <p>
+      <span class="briefing-date">April 13, 1970.</span> Two hundred thousand miles from Earth, an oxygen
+      tank ruptures aboard Apollo 13. Power drops, coordinates scramble, oxygen tanks scatter, and the only
+      way to repair each system is to solve for the missing value: the unknown, <em>x</em>.
+    </p>
+    <p style="margin-top: 10px;">
+      Today, the crew is you. <span id="briefingModeLine">Every team races the same 10 systems independently. First crew to splashdown wins.</span>
+    </p>
+    <p style="margin-top: 10px;">
+      <strong style="color: var(--amber);">The console and your logbook work together.</strong>
+      The console (this screen) shows each broken system. Your printed
+      <em>Flight Engineer's Logbook</em> is where you actually repair it: copy the
+      numbers across, fold and cut the strip by hand until you can see <b>one unit</b>,
+      then enter your answer here to restore the system. Each console system matches
+      the same numbered page in your logbook.
+    </p>
+    <p style="margin-top: 10px;">
+      Stuck after working it on paper? Tap <em>Need a hint?</em> for the equation, or
+      <em>Still lost?</em> for the step-by-step. Retries are unlimited.
+    </p>
+    <p class="muted" style="margin-top: 14px; font-style: italic; text-align: center;">Waiting for Mission Control to launch the countdown …</p>
+  </div>
+
+  <!-- TASK -->
+  <div class="card" id="taskCard" style="display:none">
+    <span class="corners-2"></span>
+    <div class="task-counter" id="taskCounter">⊹ SYSTEM 01 / 10</div>
+    <div class="task-title" id="taskTitle"></div>
+
+    <div class="logbook-callout" id="logbookCallout">
+      📓 Open <b id="lbSystemNo">SYSTEM 01</b> in your Flight Engineer's Logbook.
+    </div>
+
+    <p class="task-story" id="taskStory"></p>
+
+    <div class="copy-panel">
+      <div class="copy-panel-head">✎ Copy these onto <span id="lbSystemNo2">SYSTEM 01</span></div>
+      <div id="givensList"></div>
+    </div>
+
+    <div class="answer-head">Worked the strip on paper? Found one unit? Enter <b>x</b>:</div>
+    <input type="number" id="answerInput" inputmode="decimal" autocomplete="off" placeholder="x = ?" />
+    <div style="margin-top: 14px;">
+      <button class="primary big" id="submitBtn">Submit answer</button>
+    </div>
+    <p id="taskMsg" class="notice" style="display:none"></p>
+
+    <div class="hint-row" id="hintRow" style="display:none">
+      <button class="ghost tiny" id="hintBtn">💡 Need a hint?</button>
+    </div>
+    <div class="hint-body" id="hintBody" style="display:none">
+      <div class="task-eq-frame">
+        <div class="task-eq mono" id="taskEq"></div>
+      </div>
+      <p class="hint-text" id="hintText"></p>
+      <button class="ghost tiny" id="solutionBtn" style="margin-top: 10px; display: none;">🛠 Still lost? Show the steps</button>
+      <div class="solution-body" id="solutionBody" style="display:none">
+        <div class="solution-label">Step-by-step</div>
+        <ol class="solution-steps" id="solutionSteps"></ol>
+      </div>
+    </div>
+
+    <div class="bar-track" style="margin-top: 18px;">
+      <div class="bar-fill" id="myBarFill" style="width:0%"></div>
+      <div class="bar-label" id="myBarLabel">0 / 10</div>
+    </div>
+  </div>
+
+  <!-- END SCENE -->
+  <div class="card win" id="endCard" style="display:none">
+    <span class="corners-2"></span>
+    <div class="big-rocket">🌍🚀</div>
+    <div class="big-line">Welcome home</div>
+    <p class="sub" id="endRank" style="margin-top: 8px; font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase;"></p>
+    <p class="sub" id="endTeam" style="margin-top: 12px;"></p>
+    <p class="sub" id="endStats" style="margin-top: 8px; font-family: 'Space Mono', monospace; color: var(--cyan);"></p>
+
+    <div class="end-section" style="margin-top: 22px; text-align: left;">
+      <h2>What you used</h2>
+      <ul class="learnings">
+        <li>Isolating <em>x</em> with addition or subtraction on both sides.</li>
+        <li>Multiplying or dividing both sides when <em>x</em> was scaled.</li>
+        <li>Two-step equations (like <span class="mono">3x + 2 = 20</span>).</li>
+        <li>Variables on both sides (collecting like terms).</li>
+      </ul>
+    </div>
+
+    <p class="muted" style="margin-top: 14px; font-size: 13px;">
+      The real Apollo 13 crew did the same: life-or-death calculations with pencils, slide rules, and the
+      math they already knew. All three astronauts came home.
+    </p>
+  </div>
+
+  <a class="footer-link" href="/">⊹ Leave mission</a>
+</div>
+
+<!-- SPLASHDOWN OVERLAY -->
+<div class="splashdown-overlay" id="splashdownOverlay">
+  <div class="splash-stars"></div>
+  <div class="splash-rocket">🚀</div>
+  <div class="splash-earth">🌍</div>
+  <div class="splash-text">Splashdown</div>
+  <div class="splash-sub">Welcome home</div>
+</div>
+
+<!-- COUNTDOWN OVERLAY -->
+<div class="countdown-overlay" id="countdownOverlay">
+  <div class="countdown-label">T MINUS</div>
+  <div class="countdown-number" id="countdownNumber">3</div>
+</div>
+
+<script>
+const partyCode = location.pathname.split('/').pop().toUpperCase();
+document.getElementById('partyCode').textContent = partyCode;
+
+const setupCard    = document.getElementById('setupCard');
+const lobbyCard    = document.getElementById('lobbyCard');
+const briefingCard = document.getElementById('briefingCard');
+const taskCard     = document.getElementById('taskCard');
+const endCard      = document.getElementById('endCard');
+
+const teamName     = document.getElementById('teamName');
+const playerList   = document.getElementById('playerList');
+const addPlayerBtn = document.getElementById('addPlayerBtn');
+const lockInBtn    = document.getElementById('lockInBtn');
+const setupError   = document.getElementById('setupError');
+
+const lobbyTeamName = document.getElementById('lobbyTeamName');
+const lobbyPlayers  = document.getElementById('lobbyPlayers');
+const leaveBtn      = document.getElementById('leaveBtn');
+
+const taskCounter = document.getElementById('taskCounter');
+const taskTitle   = document.getElementById('taskTitle');
+const taskStory   = document.getElementById('taskStory');
+const taskEq      = document.getElementById('taskEq');
+const answerInput = document.getElementById('answerInput');
+const submitBtn   = document.getElementById('submitBtn');
+const taskMsg     = document.getElementById('taskMsg');
+const barFill     = document.getElementById('myBarFill');
+const barLabel    = document.getElementById('myBarLabel');
+const hintRow     = document.getElementById('hintRow');
+const hintBtn     = document.getElementById('hintBtn');
+const hintBody    = document.getElementById('hintBody');
+const hintText    = document.getElementById('hintText');
+const solutionBtn = document.getElementById('solutionBtn');
+const solutionBody = document.getElementById('solutionBody');
+const solutionSteps = document.getElementById('solutionSteps');
+
+const endRank  = document.getElementById('endRank');
+const endTeam  = document.getElementById('endTeam');
+const endStats = document.getElementById('endStats');
+
+// ---- synced countdown (server-driven) ----
+const countdownOverlay = document.getElementById('countdownOverlay');
+const countdownNumber  = document.getElementById('countdownNumber');
+let countdownTimer = null;
+let countdownLastIdx = -1;
+const COUNTDOWN_SEQ = ['3', '2', '1', 'LIFTOFF'];
+
+function renderCountdown(state) {
+  const active = state.countdownStartedAt && !state.briefingDismissed && state.status === 'started';
+  if (!active) {
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+    countdownOverlay.classList.remove('active');
+    countdownLastIdx = -1;
+    return;
+  }
+  if (countdownTimer) return; // already animating
+  const skew = (typeof state.serverNow === 'number') ? (Date.now() - state.serverNow) : 0;
+  const startedLocal = state.countdownStartedAt + skew;
+  countdownOverlay.classList.add('active');
+  const tick = () => {
+    const elapsed = Date.now() - startedLocal;
+    const idx = Math.min(COUNTDOWN_SEQ.length - 1, Math.max(0, Math.floor(elapsed / 1000)));
+    if (idx !== countdownLastIdx) {
+      countdownLastIdx = idx;
+      countdownNumber.textContent = COUNTDOWN_SEQ[idx];
+      countdownNumber.classList.remove('pop');
+      void countdownNumber.offsetWidth;
+      countdownNumber.classList.add('pop');
+    }
+    if (elapsed >= 4000) { clearInterval(countdownTimer); countdownTimer = null; }
+  };
+  tick();
+  countdownTimer = setInterval(tick, 120);
+}
+
+let TASKS = [];
+let totalTasks = 10;
+let me = null;
+let lastState = null;
+let lastStatus = null;
+let splashdownPlayed = false;
+const splashdownOverlay = document.getElementById('splashdownOverlay');
+
+function playSplashdown() {
+  splashdownOverlay.classList.remove('active');
+  void splashdownOverlay.offsetWidth;
+  splashdownOverlay.classList.add('active');
+  setTimeout(() => splashdownOverlay.classList.remove('active'), 3700);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function fmtDuration(ms) {
+  if (!ms || ms < 0) return '––:––';
+  const s = Math.floor(ms / 1000);
+  return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+
+function show(view) {
+  setupCard.style.display    = view === 'setup'    ? '' : 'none';
+  lobbyCard.style.display    = view === 'lobby'    ? '' : 'none';
+  briefingCard.style.display = view === 'briefing' ? '' : 'none';
+  taskCard.style.display     = view === 'task'     ? '' : 'none';
+  endCard.style.display      = view === 'end'      ? '' : 'none';
+}
+
+// ---- player input rows ----
+
+function buildPlayerInput(value = '', focus = false) {
+  const row = document.createElement('div');
+  row.className = 'player-input-row';
+  row.innerHTML = '<input type="text" maxlength="40" placeholder="Astronaut name" /><button class="ghost tiny" type="button" title="Remove">✕</button>';
+  const inp = row.querySelector('input');
+  const rm  = row.querySelector('button');
+  inp.value = value;
+  rm.addEventListener('click', () => {
+    row.remove();
+    if (!playerList.children.length) buildPlayerInput('', true);
+  });
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addPlayerBtn.click(); } });
+  playerList.appendChild(row);
+  if (focus) inp.focus();
+  return row;
+}
+addPlayerBtn.addEventListener('click', () => buildPlayerInput('', true));
+buildPlayerInput();
+buildPlayerInput();
+
+// ---- setup ----
+
+function showSetupError(msg) {
+  setupError.textContent = msg;
+  setupError.style.display = 'block';
+}
+
+async function lockIn() {
+  setupError.style.display = 'none';
+  const name = (teamName.value || '').trim();
+  if (!name) return showSetupError('Pick a crew name.');
+  const players = [...playerList.querySelectorAll('input')].map(i => i.value.trim()).filter(v => v.length);
+  if (!players.length) return showSetupError('Add at least one astronaut.');
+
+  lockInBtn.disabled = true;
+  lockInBtn.textContent = '⊹ Sending…';
+  try {
+    const r = await fetch('/api/party/' + partyCode + '/join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamName: name, players }),
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'failed to join');
+    lockInBtn.textContent = '✓ Ready, confirmed';
+    lockInBtn.classList.add('confirmed');
+    me = { teamId: j.teamId, teamName: j.teamName, players: j.players };
+    totalTasks = j.totalTasks || totalTasks;
+    sessionStorage.setItem('me:' + partyCode, JSON.stringify(me));
+    setTimeout(() => enterParty(j.partyStatus), 350);
+  } catch (e) {
+    showSetupError(e.message);
+    lockInBtn.disabled = false;
+    lockInBtn.textContent = '⊹ Ready';
+  }
+}
+lockInBtn.addEventListener('click', lockIn);
+
+leaveBtn.addEventListener('click', async () => {
+  if (!me) return;
+  if (!confirm('Leave this crew?')) return;
+  try {
+    await fetch('/api/party/' + partyCode + '/leave', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamId: me.teamId }),
+    });
+  } catch (_) {}
+  sessionStorage.removeItem('me:' + partyCode);
+  location.reload();
+});
+
+// ---- hint ----
+
+let hintShown = false;
+let solutionShown = false;
+hintBtn.addEventListener('click', () => {
+  hintShown = !hintShown;
+  hintBody.style.display = hintShown ? '' : 'none';
+  hintBtn.textContent = hintShown ? '💡 Hide hint' : '💡 Need a hint?';
+});
+solutionBtn.addEventListener('click', () => {
+  solutionShown = !solutionShown;
+  solutionBody.style.display = solutionShown ? '' : 'none';
+  solutionBtn.textContent = solutionShown ? '🛠 Hide steps' : '🛠 Still lost? Show the steps';
+});
+
+// ---- party flow ----
+
+function enterParty(status) {
+  lobbyTeamName.textContent = me.teamName;
+  lobbyPlayers.innerHTML = me.players.map(p => '<span class="chip">' + escapeHtml(p) + '</span>').join('');
+}
+
+let myTaskIndex = 0;
+let myDone = false;
+let myFinishRank = null;
+let myFinishedAt = null;
+
+let wrongAttemptsThisTask = 0;
+
+function sysLabel(i) { return 'SYSTEM ' + String(i + 1).padStart(2, '0'); }
+
+function renderTask() {
+  if (!TASKS.length || !TASKS[myTaskIndex]) return;
+  const task = TASKS[myTaskIndex];
+  const sys = sysLabel(myTaskIndex);
+  taskCounter.textContent = '⊹ ' + sys + ' / ' + totalTasks;
+  taskTitle.textContent = task.title;
+  document.getElementById('lbSystemNo').textContent = sys;
+  document.getElementById('lbSystemNo2').textContent = sys + ' of your logbook';
+  // Build the "copy to logbook" panel from the task's givens
+  const gl = document.getElementById('givensList');
+  gl.innerHTML = '';
+  (task.givens || []).forEach(g => {
+    const row = document.createElement('div');
+    row.className = 'given-row';
+    row.innerHTML = '<span class="given-label">' + escapeHtml(g.label) + '</span>' +
+                    '<span class="given-val">' + escapeHtml(String(g.value)) + '</span>';
+    gl.appendChild(row);
+  });
+  taskStory.textContent = task.story;
+  taskEq.textContent = task.equation;
+  hintText.textContent = task.hint || '';
+  // Build solution steps
+  solutionSteps.innerHTML = '';
+  (task.solution || []).forEach(step => {
+    const li = document.createElement('li');
+    li.innerHTML = '<div class="step-desc">' + escapeHtml(step.desc) + '</div>' +
+                   '<div class="step-eq mono">' + escapeHtml(step.equation) + '</div>';
+    solutionSteps.appendChild(li);
+  });
+  answerInput.value = '';
+  taskMsg.style.display = 'none';
+  hintShown = false;
+  solutionShown = false;
+  hintBody.style.display = 'none';
+  solutionBody.style.display = 'none';
+  hintBtn.textContent = '💡 Need a hint?';
+  solutionBtn.textContent = '🛠 Still lost? Show the steps';
+  // Reset gating
+  wrongAttemptsThisTask = 0;
+  hintRow.style.display = 'none';
+  solutionBtn.style.display = 'none';
+  setTimeout(() => answerInput.focus(), 50);
+}
+
+function updateMyProgress(state) {
+  if (!state || !me) return;
+  lastState = state;
+  const team = state.teams.find(t => t.id === me.teamId);
+  if (!team) return;
+  const prevTaskIndex = myTaskIndex;
+  myTaskIndex = team.taskIndex;
+  myDone = team.done;
+  myFinishRank = team.finishRank;
+  myFinishedAt = team.finishedAt;
+  totalTasks = state.totalTasks;
+  TASKS = state.tasks || TASKS;
+
+  const pct = Math.round((myTaskIndex / totalTasks) * 100);
+  barFill.style.width = pct + '%';
+  barFill.classList.toggle('done', myDone);
+  barLabel.textContent = myTaskIndex + ' / ' + totalTasks;
+
+  renderCountdown(state);
+
+  // Splashdown when transitioning to ended
+  if (lastStatus === 'started' && state.status === 'ended' && !splashdownPlayed) {
+    splashdownPlayed = true;
+    playSplashdown();
+  }
+  if (state.status !== 'ended') splashdownPlayed = false;
+  lastStatus = state.status;
+
+  if (state.status === 'lobby') {
+    show('lobby');
+  } else if (state.status === 'ended') {
+    showEnd(state);
+  } else { // started
+    if (!state.briefingDismissed) {
+      const ml = document.getElementById('briefingModeLine');
+      if (ml) ml.textContent = (state.mode === 'story')
+        ? 'Every team works through the same systems at its own pace. No leaderboard, no rush — just bring the astronauts home.'
+        : 'Every team races the same systems independently. First crew to splashdown wins.';
+      show('briefing');
+    } else if (myDone) {
+      showEnd(state);
+    } else {
+      const wasOnDifferentTask = prevTaskIndex !== myTaskIndex;
+      show('task');
+      if (wasOnDifferentTask || taskTitle.textContent === '') renderTask();
+    }
+  }
+}
+
+function showEnd(state) {
+  show('end');
+  const story = state.mode === 'story';
+  if (story) {
+    endRank.textContent = myDone ? '🌍 You brought the crew home' : 'Mission ended';
+  } else if (myFinishRank) {
+    endRank.textContent = (myFinishRank === 1 ? '🥇 First crew home' :
+                           myFinishRank === 2 ? '🥈 Second to splash down' :
+                           myFinishRank === 3 ? '🥉 Third to splash down' :
+                           '#' + myFinishRank + ' to splash down');
+  } else {
+    endRank.textContent = 'Mission ended';
+  }
+  endTeam.textContent = me.teamName + ' · ' + me.players.join(', ');
+  const team = state.teams.find(t => t.id === me.teamId);
+  const elapsed = (myFinishedAt && state.startedAt) ? fmtDuration(myFinishedAt - state.startedAt) : '';
+  const attempts = team ? team.attempts : 0;
+  const tasksDone = team ? team.tasksCompleted : 0;
+  // Story mode: no time pressure shown, just systems + effort
+  endStats.textContent = story
+    ? (tasksDone + '/' + totalTasks + ' systems restored · ' + attempts + ' attempts')
+    : ((elapsed ? '⏱ ' + elapsed + ' · ' : '') + tasksDone + '/' + totalTasks + ' systems · ' + attempts + ' attempts');
+}
+
+async function submitAnswer() {
+  if (!me || myDone) return;
+  const val = (answerInput.value || '').trim();
+  if (!val) {
+    taskMsg.textContent = 'Enter a number.';
+    taskMsg.className = 'notice error';
+    taskMsg.style.display = 'block';
+    return;
+  }
+  submitBtn.disabled = true;
+  try {
+    const r = await fetch('/api/party/' + partyCode + '/answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamId: me.teamId, answer: val }),
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'failed');
+    if (j.correct) {
+      taskMsg.textContent = j.done ? '🎉 Final system fixed. Bringing you home.' : '✓ System restored. Next task.';
+      taskMsg.className = 'notice success';
+      taskMsg.style.display = 'block';
+      myTaskIndex = j.taskIndex;
+      myDone = j.done;
+      myFinishRank = j.finishRank;
+      // Keep the success message visible long enough to read before advancing.
+      setTimeout(() => {
+        if (!myDone) {
+          renderTask();
+          // After renderTask resets state, re-show the success message briefly
+          taskMsg.textContent = '✓ System restored. Next task.';
+          taskMsg.className = 'notice success';
+          taskMsg.style.display = 'block';
+          setTimeout(() => { taskMsg.style.display = 'none'; }, 900);
+        }
+      }, 1400);
+    } else {
+      taskMsg.textContent = j.message ? '✗ ' + j.message : '✗ Not quite. Recompute and resubmit.';
+      taskMsg.className = 'notice error';
+      taskMsg.style.display = 'block';
+      answerInput.select();
+      // Only count genuine wrong answers (not "enter a number" or parse errors)
+      if (!j.message) {
+        wrongAttemptsThisTask += 1;
+        if (wrongAttemptsThisTask >= 1) hintRow.style.display = '';
+        if (wrongAttemptsThisTask >= 2) solutionBtn.style.display = '';
+      }
+    }
+  } catch (e) {
+    taskMsg.textContent = e.message;
+    taskMsg.className = 'notice error';
+    taskMsg.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+submitBtn.addEventListener('click', submitAnswer);
+answerInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitAnswer(); });
+
+function connect() {
+  const es = new EventSource('/api/party/' + partyCode + '/events');
+  es.addEventListener('state',   e => { try { updateMyProgress(JSON.parse(e.data)); } catch (_) {} });
+  es.addEventListener('started', e => { try { updateMyProgress(JSON.parse(e.data)); } catch (_) {} });
+  es.onerror = () => { es.close(); setTimeout(connect, 1500); };
+}
+
+(async function bootstrap() {
+  const stored = sessionStorage.getItem('me:' + partyCode);
+  if (!stored) { show('setup'); connect(); return; }
+  try {
+    const saved = JSON.parse(stored);
+    const r = await fetch('/api/party/' + partyCode + '/team/' + encodeURIComponent(saved.teamId));
+    if (!r.ok) throw new Error('team gone');
+    const j = await r.json();
+    me = { teamId: j.team.id, teamName: j.team.name, players: j.team.players };
+    enterParty(j.partyStatus);
+    connect();
+  } catch (_) {
+    sessionStorage.removeItem('me:' + partyCode);
+    show('setup');
+    connect();
+  }
+})();
+</script>
+</body>
+</html>

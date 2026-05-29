@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#050828" />
+<title>Mission Control · Bring Them Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<div class="cosmos" aria-hidden="true">
+  <div class="stars stars-1"></div>
+  <div class="stars stars-2"></div>
+  <div class="stars stars-3"></div>
+  <div class="nebula nebula-violet"></div>
+  <div class="nebula nebula-cyan"></div>
+  <div class="nebula nebula-rose"></div>
+  <svg class="earth" viewBox="0 0 200 200">
+    <defs>
+      <radialGradient id="earth-body" cx="32%" cy="28%"><stop offset="0%" stop-color="#bae6fd"/><stop offset="35%" stop-color="#38bdf8"/><stop offset="75%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#020617"/></radialGradient>
+      <radialGradient id="earth-halo" cx="50%" cy="50%"><stop offset="78%" stop-color="rgba(125,211,252,0)"/><stop offset="100%" stop-color="rgba(125,211,252,0.32)"/></radialGradient>
+      <clipPath id="earth-clip"><circle cx="100" cy="100" r="80"/></clipPath>
+    </defs>
+    <circle cx="100" cy="100" r="98" fill="url(#earth-halo)"/>
+    <circle cx="100" cy="100" r="80" fill="url(#earth-body)"/>
+    <g clip-path="url(#earth-clip)">
+      <g fill="#16a34a" opacity="0.78">
+        <path d="M40 70 Q55 60 70 75 T100 80 Q90 95 80 90 T55 95 Q42 88 40 70 Z"/>
+        <path d="M115 60 Q135 55 145 75 Q150 90 138 100 Q128 95 120 88 Q112 78 115 60 Z"/>
+        <path d="M82 120 Q100 115 118 128 Q120 140 105 148 Q88 148 80 138 Q75 128 82 120 Z"/>
+        <ellipse cx="140" cy="135" rx="12" ry="7"/>
+      </g>
+      <g fill="#fef3c7" opacity="0.35"><ellipse cx="65" cy="55" rx="28" ry="5"/><ellipse cx="125" cy="115" rx="22" ry="4"/><ellipse cx="95" cy="155" rx="20" ry="3"/></g>
+    </g>
+  </svg>
+  <svg class="asteroid asteroid-1" viewBox="0 0 100 100"><polygon points="50,4 78,16 94,46 86,80 56,96 22,88 6,58 12,24" fill="#3a3640" stroke="#0c0a14" stroke-width="2"/><circle cx="42" cy="38" r="6" fill="#1a1620"/><circle cx="64" cy="62" r="4" fill="#1a1620"/><circle cx="32" cy="68" r="3" fill="#1a1620"/></svg>
+  <svg class="asteroid asteroid-2" viewBox="0 0 100 100"><polygon points="50,8 84,28 92,62 70,92 28,90 8,60 18,22" fill="#2a2630" stroke="#0c0a14" stroke-width="2"/><circle cx="48" cy="46" r="5" fill="#15121a"/><circle cx="68" cy="68" r="3" fill="#15121a"/></svg>
+  <svg class="asteroid asteroid-3" viewBox="0 0 100 100"><polygon points="50,2 82,18 96,54 78,86 38,96 12,72 4,40 22,12" fill="#3a3640" stroke="#0c0a14" stroke-width="2"/><circle cx="38" cy="42" r="8" fill="#1a1620"/><circle cx="68" cy="60" r="5" fill="#1a1620"/><circle cx="48" cy="76" r="4" fill="#1a1620"/></svg>
+  <svg class="asteroid asteroid-4" viewBox="0 0 100 100"><polygon points="50,10 80,24 88,58 62,88 24,82 10,52 22,18" fill="#2e2a36" stroke="#0c0a14" stroke-width="2"/><circle cx="46" cy="50" r="4" fill="#15121a"/></svg>
+  <svg class="asteroid asteroid-5" viewBox="0 0 100 100"><polygon points="50,6 78,22 90,56 72,86 34,90 12,64 16,28" fill="#332f3a" stroke="#0c0a14" stroke-width="2"/><circle cx="44" cy="42" r="6" fill="#1a1620"/><circle cx="64" cy="64" r="3" fill="#1a1620"/></svg>
+  <div class="scanlines"></div>
+</div>
+
+<div class="container">
+  <header class="center" style="margin-bottom: 24px;">
+    <div class="eyebrow">mission control · inspired by apollo 13</div>
+    <h1>Bring Them Home</h1>
+  </header>
+
+  <div class="card center" id="codeCard">
+    <span class="corners-2"></span>
+    <div class="code-display">
+      <div class="party-code" id="partyCode">––––</div>
+    </div>
+    <p class="muted" style="margin-top: 14px; font-size: 13px; letter-spacing: 0.08em;">
+      Crews: open <span class="mono" id="hostName" style="color: var(--cyan);"></span> on one phone per team and enter this code.
+    </p>
+    <p style="margin-top: 12px;">
+      <a href="/logbook" target="_blank" class="btn" style="display:inline-block; text-decoration:none; font-size:13px; padding:9px 16px;">⎙ Print the Flight Engineer's Logbook</a>
+    </p>
+    <p class="muted" style="margin-top: 6px; font-size: 12px; opacity: 0.7;">
+      One per student. They model each system by hand before entering answers.
+    </p>
+    <div class="task-count-row" style="text-align: left;">
+      <label><span class="eyebrow">Mode</span></label>
+      <div class="mode-toggle" id="modeToggle">
+        <button class="mode-opt active" data-mode="competition">🏁 Competition</button>
+        <button class="mode-opt" data-mode="story">📖 Story</button>
+      </div>
+      <p class="mode-desc" id="modeDesc">Crews race the same systems. Leaderboard and finish medals.</p>
+    </div>
+    <div class="task-count-row" style="text-align: left;">
+      <label for="taskCountSlider">
+        <span class="eyebrow">Mission length</span>
+      </label>
+      <div class="task-count-controls">
+        <input type="range" id="taskCountSlider" min="1" max="10" value="10" />
+        <div class="task-count-readout"><span id="taskCountValue">10</span> <span class="task-count-suffix">/ 10 systems</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOBBY -->
+  <div class="card" id="lobbyCard">
+    <span class="corners-2"></span>
+    <div class="card-header">
+      <h2>Crew roster</h2>
+      <button class="primary" id="startBtn" disabled>⊹ Launch</button>
+    </div>
+    <p>Crews appear here as they join. Launch when ready!</p>
+    <div id="lobbyTeams" style="margin-top: 12px;"></div>
+  </div>
+
+  <!-- BRIEFING (master-controlled dismiss) -->
+  <div class="card briefing" id="briefingCard" style="display:none">
+    <span class="corners-2"></span>
+    <div class="card-header">
+      <h2>Mission briefing</h2>
+      <span class="eyebrow" style="opacity:0.6">Inspired by Apollo 13</span>
+    </div>
+    <p class="briefing-quote">"Houston, we've had a problem."</p>
+    <p>
+      <span class="briefing-date">April 13, 1970.</span> Two hundred thousand miles from Earth, an oxygen
+      tank ruptures aboard Apollo 13. Power drops, coordinates scramble, oxygen tanks scatter, the
+      navigation scanner glitches. Every system shows incomplete information, and the only way to repair
+      each one is to solve for the missing value: the unknown, <em>x</em>.
+    </p>
+    <p style="margin-top: 10px;">
+      Today, the crew is you. <span id="briefingModeLine">Every team races the same 10 systems independently. First crew to splashdown wins.</span>
+    </p>
+    <p style="margin-top: 10px;">
+      <strong style="color: var(--amber);">The console and the logbook work together.</strong>
+      Each crew has a printed <em>Flight Engineer's Logbook</em>. The console shows a broken
+      system; the crew copies its numbers onto the matching logbook page, folds and cuts the
+      paper strip by hand until they can see <b>one unit</b>, then enters the answer on the
+      console. Same numbered system on both. Hints and step-by-step are there if a crew is
+      stuck after working it on paper.
+    </p>
+    <div style="margin-top: 18px;">
+      <button class="primary big" id="dismissBriefingBtn">⊹ Launch the mission</button>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN OVERLAY -->
+  <div class="countdown-overlay" id="countdownOverlay">
+    <div class="countdown-label">T MINUS</div>
+    <div class="countdown-number" id="countdownNumber">3</div>
+  </div>
+
+  <!-- SPLASHDOWN OVERLAY -->
+  <div class="splashdown-overlay" id="splashdownOverlay">
+    <div class="splash-stars"></div>
+    <div class="splash-rocket">🚀</div>
+    <div class="splash-earth">🌍</div>
+    <div class="splash-text">Splashdown</div>
+    <div class="splash-sub">Welcome home</div>
+  </div>
+
+  <!-- RACE -->
+  <div class="card" id="gameCard" style="display:none">
+    <span class="corners-2"></span>
+    <div class="card-header">
+      <h2 id="gameHeading">Race to Earth</h2>
+      <div class="row" style="gap: 8px;">
+        <span class="mission-clock mono" id="missionClock">00:00</span>
+        <button class="ghost tiny" id="revealBtn" style="display:none;">👁 Reveal progress</button>
+        <button class="ghost tiny" id="finishBtn">End mission</button>
+        <button class="ghost tiny" id="resetBtn">Reset</button>
+      </div>
+    </div>
+    <div id="gameTeams" style="margin-top: 12px;"></div>
+    <p id="hiddenNote" class="muted" style="display:none; font-style:italic; margin-top:12px;">
+      Story mode: crews are working at their own pace. Their progress is hidden so no one feels rushed.
+      Press <b>Reveal progress</b> when you want the room to see how everyone is doing.
+    </p>
+  </div>
+
+  <!-- END SCENE -->
+  <div class="card" id="endCard" style="display:none">
+    <span class="corners-2"></span>
+    <div class="end-hero center">
+      <div class="end-rocket">🌍🚀</div>
+      <div class="eyebrow" style="margin-top: 6px;">Mission complete</div>
+      <h1 class="end-title">Welcome home</h1>
+      <p class="muted" id="endTagline" style="max-width: 540px; margin: 8px auto 0;">
+        Mission duration <span class="mono" id="endDuration" style="color: var(--text);">––:––</span>
+      </p>
+    </div>
+
+    <div class="end-section">
+      <h2>Final standings</h2>
+      <div id="endStandings"></div>
+    </div>
+
+    <div class="end-section">
+      <h2>What you used</h2>
+      <ul class="learnings">
+        <li><strong>Isolating <em>x</em></strong> by adding or subtracting the same value from both sides.</li>
+        <li><strong>Multiplying or dividing both sides</strong> when the variable was scaled (2x, x/3, …).</li>
+        <li><strong>Two-step equations</strong> with coefficients <em>and</em> constants (3x + 2 = 20).</li>
+        <li><strong>Variables on both sides</strong>, collecting like terms to solve x − 15 = 2x − 45.</li>
+      </ul>
+    </div>
+
+    <div class="end-section">
+      <h2>The real Apollo 13</h2>
+      <p>
+        In April 1970, NASA flight controllers and the three-astronaut crew solved life-or-death calculations
+        with pencils, slide rules, and the math they already knew: power budgets, burn durations, course
+        corrections. Every astronaut returned safely. You just walked the same path, one equation at a time.
+      </p>
+    </div>
+
+    <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+      <button class="primary" id="newMissionBtn">⊹ New mission</button>
+      <button class="ghost" id="resetBtn2">Back to lobby</button>
+    </div>
+  </div>
+
+  <a class="footer-link" href="/">⊹ Home</a>
+</div>
+
+<style>
+  #musicToggle {
+    position: fixed; bottom: 20px; right: 20px; z-index: 60;
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: 'Orbitron','Calibri',sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 9px 15px 9px 13px; border-radius: 999px;
+    border: 1px solid rgba(125,211,252,0.28); background: rgba(8,12,36,0.55);
+    color: #8aa0c6; cursor: pointer;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transition: color .25s, border-color .25s, box-shadow .25s, opacity .25s;
+    opacity: 0.7;
+  }
+  #musicToggle:hover { opacity: 1; }
+  #musicToggle.on {
+    color: #fbbf24; border-color: rgba(251,191,36,0.5);
+    box-shadow: 0 0 22px rgba(251,191,36,0.18); opacity: 1;
+  }
+  /* little equalizer bars, animate only while playing */
+  #musicToggle .eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+  #musicToggle .eq i {
+    width: 2px; height: 4px; background: currentColor; border-radius: 1px; opacity: 0.85;
+  }
+  #musicToggle.on .eq i { animation: eqbar 1s ease-in-out infinite; }
+  #musicToggle.on .eq i:nth-child(2) { animation-delay: .18s; }
+  #musicToggle.on .eq i:nth-child(3) { animation-delay: .36s; }
+  #musicToggle.on .eq i:nth-child(4) { animation-delay: .54s; }
+  @keyframes eqbar { 0%,100% { height: 3px; } 50% { height: 12px; } }
+</style>
+<button id="musicToggle" title="Ambient mission music" aria-label="Toggle ambient music">
+  <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <span id="musicLabel">Music</span>
+</button>
+
+<script>
+const partyCode  = location.pathname.split('/').pop().toUpperCase();
+document.getElementById('partyCode').textContent = partyCode;
+document.getElementById('hostName').textContent  = location.host;
+
+const startBtn     = document.getElementById('startBtn');
+const resetBtn     = document.getElementById('resetBtn');
+const resetBtn2    = document.getElementById('resetBtn2');
+const finishBtn    = document.getElementById('finishBtn');
+const newMissionBtn = document.getElementById('newMissionBtn');
+const dismissBriefingBtn = document.getElementById('dismissBriefingBtn');
+const revealBtn    = document.getElementById('revealBtn');
+const hiddenNote   = document.getElementById('hiddenNote');
+
+revealBtn.addEventListener('click', async () => {
+  revealBtn.disabled = true;
+  try {
+    const r = await fetch('/api/party/' + partyCode + '/reveal-progress', { method: 'POST' });
+    if (!r.ok) { const j = await r.json().catch(()=>({})); throw new Error(j.error || 'failed'); }
+  } catch (e) { alert(e.message); }
+  finally { revealBtn.disabled = false; }
+});
+
+const codeCard     = document.getElementById('codeCard');
+const lobbyCard    = document.getElementById('lobbyCard');
+const briefingCard = document.getElementById('briefingCard');
+const gameCard     = document.getElementById('gameCard');
+const endCard      = document.getElementById('endCard');
+const lobbyTeams   = document.getElementById('lobbyTeams');
+const gameTeams    = document.getElementById('gameTeams');
+const gameHeading  = document.getElementById('gameHeading');
+const endStandings = document.getElementById('endStandings');
+const endDuration  = document.getElementById('endDuration');
+const missionClock = document.getElementById('missionClock');
+
+let lastState = null;
+let clockTimer = null;
+let lastStatus = null;
+let splashdownPlayed = false;
+const splashdownOverlay = document.getElementById('splashdownOverlay');
+
+function playSplashdown() {
+  splashdownOverlay.classList.remove('active');
+  void splashdownOverlay.offsetWidth;
+  splashdownOverlay.classList.add('active');
+  setTimeout(() => splashdownOverlay.classList.remove('active'), 3700);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function playerChips(players) {
+  if (!players || !players.length) return '';
+  return '<div class="player-chips">' + players.map(p => '<span class="chip">' + escapeHtml(p) + '</span>').join('') + '</div>';
+}
+function fmtDuration(ms) {
+  if (!ms || ms < 0) return '––:––';
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+function showOnly(view) {
+  codeCard.style.display     = (view === 'lobby') ? '' : 'none';
+  lobbyCard.style.display    = (view === 'lobby') ? '' : 'none';
+  briefingCard.style.display = (view === 'briefing') ? '' : 'none';
+  gameCard.style.display     = (view === 'race') ? '' : 'none';
+  endCard.style.display      = (view === 'end') ? '' : 'none';
+}
+
+function renderLobby(state) {
+  lobbyTeams.innerHTML = '';
+  if (!state.teams.length) {
+    lobbyTeams.innerHTML = '<p class="muted" style="font-style: italic; opacity: 0.7;">Awaiting crew…</p>';
+  } else {
+    for (const t of state.teams) {
+      const row = document.createElement('div');
+      row.className = 'team-row';
+      row.innerHTML =
+        '<div class="team-head">' +
+          '<div class="team-name">' + escapeHtml(t.name) + '</div>' +
+          '<div class="team-meta">⊹ ' + t.players.length + ' CREW</div>' +
+        '</div>' + playerChips(t.players);
+      lobbyTeams.appendChild(row);
+    }
+  }
+  startBtn.disabled = state.teams.length === 0;
+}
+
+function renderGame(state) {
+  const story = state.mode === 'story';
+  const hidden = story && !state.progressRevealed;
+  gameHeading.textContent = story ? 'Mission progress' : 'Race to Earth';
+
+  // Reveal/Hide control only in story mode
+  if (story) {
+    revealBtn.style.display = '';
+    revealBtn.textContent = state.progressRevealed ? '🙈 Hide progress' : '👁 Reveal progress';
+    hiddenNote.style.display = hidden ? '' : 'none';
+  } else {
+    revealBtn.style.display = 'none';
+    hiddenNote.style.display = 'none';
+  }
+
+  gameTeams.innerHTML = '';
+  const teams = [...state.teams].sort((a, b) => {
+    if (story) return a.name.localeCompare(b.name); // stable, no ranking pressure
+    if (a.done && b.done) return a.finishRank - b.finishRank;
+    if (a.done) return -1;
+    if (b.done) return 1;
+    if (b.taskIndex !== a.taskIndex) return b.taskIndex - a.taskIndex;
+    return a.name.localeCompare(b.name);
+  });
+  for (const t of teams) {
+    const row = document.createElement('div');
+
+    if (hidden) {
+      // Crew is present and working; no progress shown, nothing to rush about
+      row.className = 'team-row';
+      row.innerHTML =
+        '<div class="team-head">' +
+          '<div class="team-name">' + escapeHtml(t.name) + '</div>' +
+          '<div class="team-meta">⊹ ON THE MISSION</div>' +
+        '</div>' +
+        playerChips(t.players);
+      gameTeams.appendChild(row);
+      continue;
+    }
+
+    row.className = 'team-row' + (t.done ? ' winner' : '');
+    const pct = Math.round(t.progress);
+    let meta;
+    if (story) {
+      meta = t.done
+        ? '✓ HOME'
+        : 'SYSTEM ' + String(Math.min(t.taskIndex + 1, state.totalTasks)).padStart(2, '0') + ' / ' + state.totalTasks;
+    } else {
+      const medal = t.finishRank === 1 ? '🥇' : t.finishRank === 2 ? '🥈' : t.finishRank === 3 ? '🥉' : '🏁';
+      meta = t.done
+        ? medal + ' SPLASHED DOWN #' + t.finishRank
+        : 'SYSTEM ' + String(Math.min(t.taskIndex + 1, state.totalTasks)).padStart(2, '0') + ' / ' + state.totalTasks;
+    }
+    row.innerHTML =
+      '<div class="team-head">' +
+        '<div class="team-name">' + escapeHtml(t.name) + '</div>' +
+        '<div class="team-meta">' + meta + '</div>' +
+      '</div>' +
+      playerChips(t.players) +
+      '<div class="bar-track">' +
+        '<div class="bar-fill' + (t.done ? ' done' : '') + '" style="width:' + pct + '%"></div>' +
+        '<div class="bar-label">' + t.tasksCompleted + ' / ' + state.totalTasks + ' · ' + pct + '%</div>' +
+      '</div>';
+    gameTeams.appendChild(row);
+  }
+  if (!state.teams.length) gameTeams.innerHTML = '<p class="muted">No crews.</p>';
+}
+
+function renderEnd(state) {
+  // Mission duration
+  const dur = (state.endedAt && state.startedAt) ? (state.endedAt - state.startedAt) : 0;
+  endDuration.textContent = fmtDuration(dur);
+
+  // Standings: finished teams ranked, then unfinished by progress
+  endStandings.innerHTML = '';
+  const teams = [...state.teams].sort((a, b) => {
+    if (a.done && b.done) return a.finishRank - b.finishRank;
+    if (a.done) return -1;
+    if (b.done) return 1;
+    return b.taskIndex - a.taskIndex;
+  });
+  for (const t of teams) {
+    const row = document.createElement('div');
+    row.className = 'standing-row' + (t.done ? ' winner' : '');
+    const rankBadge = t.done
+      ? (t.finishRank === 1 ? '🥇' : t.finishRank === 2 ? '🥈' : t.finishRank === 3 ? '🥉' : '#' + t.finishRank)
+      : '⊹';
+    const elapsed = (t.done && t.finishedAt && state.startedAt)
+      ? fmtDuration(t.finishedAt - state.startedAt)
+      : '';
+    const statusLabel = t.done
+      ? '<span class="standing-time mono">' + elapsed + '</span>'
+      : '<span class="standing-progress">' + t.tasksCompleted + '/' + state.totalTasks + ' systems</span>';
+    row.innerHTML =
+      '<div class="standing-rank">' + rankBadge + '</div>' +
+      '<div class="standing-body">' +
+        '<div class="standing-name">' + escapeHtml(t.name) + '</div>' +
+        '<div class="standing-players">' + t.players.map(p => escapeHtml(p)).join(', ') + '</div>' +
+      '</div>' +
+      '<div class="standing-end">' + statusLabel + ' <span class="standing-attempts">' + t.attempts + ' attempts</span></div>';
+    endStandings.appendChild(row);
+  }
+}
+
+function updateClock() {
+  if (!lastState || !lastState.startedAt) { missionClock.textContent = '00:00'; return; }
+  const end = lastState.endedAt || Date.now();
+  missionClock.textContent = fmtDuration(end - lastState.startedAt);
+}
+
+function render(state) {
+  lastState = state;
+
+  renderCountdown(state);
+
+  // Splashdown animation: play once when transitioning to ended
+  if (lastStatus === 'started' && state.status === 'ended' && !splashdownPlayed) {
+    splashdownPlayed = true;
+    playSplashdown();
+  }
+  if (state.status !== 'ended') splashdownPlayed = false;
+  lastStatus = state.status;
+
+  // Clock. runs while started, freezes on end
+  clearInterval(clockTimer);
+  if (state.status === 'started') {
+    updateClock();
+    clockTimer = setInterval(updateClock, 1000);
+  } else {
+    updateClock();
+  }
+
+  if (state.status === 'lobby') {
+    showOnly('lobby');
+    renderLobby(state);
+  } else if (state.status === 'ended') {
+    showOnly('end');
+    renderEnd(state);
+  } else { // started
+    if (!state.briefingDismissed) {
+      setBriefingModeLine(state.mode);
+      showOnly('briefing');
+    } else {
+      showOnly('race');
+      renderGame(state);
+    }
+  }
+}
+
+function setBriefingModeLine(mode) {
+  const el = document.getElementById('briefingModeLine');
+  if (!el) return;
+  el.textContent = (mode === 'story')
+    ? 'Every team works through the same systems at its own pace. No leaderboard, no rush — just bring the astronauts home.'
+    : 'Every team races the same systems independently. First crew to splashdown wins.';
+}
+
+// ---- actions ----
+
+const taskCountSlider = document.getElementById('taskCountSlider');
+const taskCountValue  = document.getElementById('taskCountValue');
+taskCountSlider.addEventListener('input', () => {
+  taskCountValue.textContent = taskCountSlider.value;
+});
+
+let selectedMode = 'competition';
+const modeToggle = document.getElementById('modeToggle');
+const modeDesc   = document.getElementById('modeDesc');
+const MODE_DESCS = {
+  competition: 'Crews race the same systems. Leaderboard and finish medals.',
+  story: 'Crews go at their own pace. No leaderboard, no rank, no rush.',
+};
+modeToggle.addEventListener('click', e => {
+  const btn = e.target.closest('.mode-opt');
+  if (!btn) return;
+  selectedMode = btn.dataset.mode;
+  [...modeToggle.children].forEach(b => b.classList.toggle('active', b === btn));
+  modeDesc.textContent = MODE_DESCS[selectedMode];
+});
+
+startBtn.addEventListener('click', async () => {
+  startBtn.disabled = true;
+  try {
+    const taskCount = parseInt(taskCountSlider.value, 10) || 10;
+    const r = await fetch('/api/party/' + partyCode + '/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ taskCount, mode: selectedMode }),
+    });
+    if (!r.ok) { const j = await r.json().catch(()=>({})); throw new Error(j.error || 'failed to start'); }
+  } catch (e) { alert(e.message); startBtn.disabled = false; }
+});
+
+const countdownOverlay = document.getElementById('countdownOverlay');
+const countdownNumber  = document.getElementById('countdownNumber');
+let countdownTimer = null;
+let countdownLastIdx = -1;
+const COUNTDOWN_SEQ = ['3', '2', '1', 'LIFTOFF'];
+
+// Server-driven: shows on every device, synced to state.countdownStartedAt
+function renderCountdown(state) {
+  const active = state.countdownStartedAt && !state.briefingDismissed && state.status === 'started';
+  if (!active) {
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+    countdownOverlay.classList.remove('active');
+    countdownLastIdx = -1;
+    return;
+  }
+  if (countdownTimer) return;
+  const skew = (typeof state.serverNow === 'number') ? (Date.now() - state.serverNow) : 0;
+  const startedLocal = state.countdownStartedAt + skew;
+  countdownOverlay.classList.add('active');
+  const tick = () => {
+    const elapsed = Date.now() - startedLocal;
+    const idx = Math.min(COUNTDOWN_SEQ.length - 1, Math.max(0, Math.floor(elapsed / 1000)));
+    if (idx !== countdownLastIdx) {
+      countdownLastIdx = idx;
+      countdownNumber.textContent = COUNTDOWN_SEQ[idx];
+      countdownNumber.classList.remove('pop');
+      void countdownNumber.offsetWidth;
+      countdownNumber.classList.add('pop');
+    }
+    if (elapsed >= 4000) { clearInterval(countdownTimer); countdownTimer = null; }
+  };
+  tick();
+  countdownTimer = setInterval(tick, 120);
+}
+
+dismissBriefingBtn.addEventListener('click', async () => {
+  dismissBriefingBtn.disabled = true;
+  try {
+    const r = await fetch('/api/party/' + partyCode + '/start-countdown', { method: 'POST' });
+    if (!r.ok) { const j = await r.json().catch(()=>({})); throw new Error(j.error || 'failed'); }
+  } catch (e) { alert(e.message); dismissBriefingBtn.disabled = false; }
+});
+
+finishBtn.addEventListener('click', async () => {
+  if (!confirm('End the mission now? This shows the wrap-up to all crews.')) return;
+  finishBtn.disabled = true;
+  try {
+    const r = await fetch('/api/party/' + partyCode + '/finish', { method: 'POST' });
+    if (!r.ok) { const j = await r.json().catch(()=>({})); throw new Error(j.error || 'failed'); }
+  } catch (e) { alert(e.message); }
+  finally { finishBtn.disabled = false; }
+});
+
+async function resetParty() {
+  if (!confirm('Reset to lobby? Current progress is lost.')) return;
+  try {
+    const r = await fetch('/api/party/' + partyCode + '/reset', { method: 'POST' });
+    if (!r.ok) { const j = await r.json().catch(()=>({})); throw new Error(j.error || 'failed'); }
+  } catch (e) { alert(e.message); }
+}
+resetBtn.addEventListener('click', resetParty);
+resetBtn2.addEventListener('click', resetParty);
+
+newMissionBtn.addEventListener('click', async () => {
+  try {
+    const r = await fetch('/api/party', { method: 'POST' });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'failed');
+    location.href = '/master/' + j.code;
+  } catch (e) { alert(e.message); }
+});
+
+function connect() {
+  const es = new EventSource('/api/party/' + partyCode + '/events');
+  es.addEventListener('state',   e => { try { render(JSON.parse(e.data)); } catch (_) {} });
+  es.addEventListener('started', e => { try { render(JSON.parse(e.data)); } catch (_) {} });
+  es.onerror = () => { es.close(); setTimeout(connect, 1500); };
+}
+connect();
+</script>
+
+<script>
+/* ── Ambient "mission control" music, synthesized live (no audio files). ──
+   Master screen only. A slow, eerie evolving space drone: detuned pad, a
+   drifting dissonant shimmer, filtered "solar wind", a low sub rumble, and
+   occasional sonar pings. ON BY DEFAULT: it builds on load and resumes the
+   moment the host interacts (browsers block true autoplay before a gesture).
+   The bottom-right button mutes/unmutes. */
+(function () {
+  const btn = document.getElementById('musicToggle');
+  const label = document.getElementById('musicLabel');
+  let ctx, master, built = false, muted = false, blipTimer = null;
+  const LEVEL = 0.17;
+
+  function makeReverb(seconds, decay) {
+    const rate = ctx.sampleRate, len = Math.floor(rate * seconds);
+    const buf = ctx.createBuffer(2, len, rate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+    }
+    const c = ctx.createConvolver(); c.buffer = buf; return c;
+  }
+
+  function build() {
+    if (built) return;
+    built = true;
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    master = ctx.createGain();
+    master.gain.value = 0;
+    master.connect(ctx.destination);
+
+    // long, smeared reverb tail = cold and cavernous
+    const reverb = makeReverb(6.5, 2.6);
+    const reverbGain = ctx.createGain(); reverbGain.gain.value = 0.6;
+    reverb.connect(reverbGain).connect(master);
+
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 560; lp.Q.value = 0.8;
+    lp.connect(master); lp.connect(reverb);
+
+    // slow filter sweep
+    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.04;
+    const lfoGain = ctx.createGain(); lfoGain.gain.value = 300;
+    lfo.connect(lfoGain).connect(lp.frequency); lfo.start();
+
+    // low sub rumble for unease (D1)
+    const sub = ctx.createOscillator(); sub.type = 'sine'; sub.frequency.value = 36.71;
+    const subg = ctx.createGain(); subg.gain.value = 0.06;
+    sub.connect(subg).connect(master); sub.start();
+
+    // pad chord: A spacey minor stack (A1, E2, A2, E3, A3)
+    const voices = [55, 82.41, 110, 164.81, 220];
+    voices.forEach((f, i) => {
+      const o = ctx.createOscillator();
+      o.type = i < 3 ? 'sine' : 'triangle';
+      o.frequency.value = f;
+      o.detune.value = Math.random() * 10 - 5;
+      const g = ctx.createGain(); g.gain.value = 0;
+      o.connect(g).connect(lp); o.start();
+      // each voice breathes at its own slow rate
+      const swell = ctx.createOscillator(); swell.frequency.value = 0.022 + i * 0.010;
+      const sg = ctx.createGain(); sg.gain.value = 0.038;
+      const base = ctx.createConstantSource(); base.offset.value = 0.072 - i * 0.010;
+      swell.connect(sg).connect(g.gain); base.connect(g.gain);
+      swell.start(); base.start();
+      // top voice wavers in pitch: seasick, eerie
+      if (i === voices.length - 1) {
+        const drift = ctx.createOscillator(); drift.frequency.value = 0.07;
+        const dg = ctx.createGain(); dg.gain.value = 16; // +/- 16 cents
+        drift.connect(dg).connect(o.detune); drift.start();
+      }
+    });
+
+    // drifting DISSONANT shimmer: a tritone over the root, swelling in and out
+    // over ~70s so an unsettling interval ghosts in and disappears
+    const diss = ctx.createOscillator(); diss.type = 'sine'; diss.frequency.value = 311.13; // D#4, tritone over A
+    diss.detune.value = Math.random() * 8 - 4;
+    const dissg = ctx.createGain(); dissg.gain.value = 0;
+    diss.connect(dissg).connect(reverb); diss.connect(dissg);  // mostly reverb-soaked
+    dissg.connect(master);
+    const dlfo = ctx.createOscillator(); dlfo.frequency.value = 0.014; // ~70s period
+    const dlg = ctx.createGain(); dlg.gain.value = 0.028;
+    const dbase = ctx.createConstantSource(); dbase.offset.value = 0.028;
+    dlfo.connect(dlg).connect(dissg.gain); dbase.connect(dissg.gain);
+    diss.start(); dlfo.start(); dbase.start();
+
+    // "solar wind": looping white noise through a slowly sweeping bandpass
+    const nb = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
+    const nd = nb.getChannelData(0);
+    for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    const noise = ctx.createBufferSource(); noise.buffer = nb; noise.loop = true;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 500; bp.Q.value = 3.5;
+    const ng = ctx.createGain(); ng.gain.value = 0.05;
+    noise.connect(bp).connect(ng); ng.connect(reverb); ng.connect(master);
+    const nlfo = ctx.createOscillator(); nlfo.frequency.value = 0.018;
+    const nlg = ctx.createGain(); nlg.gain.value = 380;
+    nlfo.connect(nlg).connect(bp.frequency); nlfo.start();
+    noise.start();
+
+    // occasional soft sonar ping, sometimes an uneasy tritone pair
+    function blip() {
+      const notes = [523.25, 622.25, 659.25, 739.99, 783.99]; // C5 Eb5 E5 F#5 G5 (tritone colour)
+      const root = notes[Math.floor(Math.random() * notes.length)];
+      const set = Math.random() < 0.35 ? [root, root * 1.4142] : [root]; // sometimes a tritone above
+      set.forEach((freq, k) => {
+        const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = freq;
+        const g = ctx.createGain(); g.gain.value = 0;
+        o.connect(g); g.connect(reverb); g.connect(master);
+        const t = ctx.currentTime + k * 0.18;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.04, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 2.0);
+        o.start(t); o.stop(t + 2.2);
+      });
+      blipTimer = setTimeout(blip, 9000 + Math.random() * 14000);
+    }
+    blipTimer = setTimeout(blip, 5000);
+
+    master.gain.setTargetAtTime(LEVEL, ctx.currentTime, 2.6); // gentle fade in
+  }
+
+  function applyGain() {
+    if (!ctx) return;
+    master.gain.setTargetAtTime(muted ? 0 : LEVEL, ctx.currentTime, 0.6);
+  }
+
+  function paint() {
+    const on = !muted;
+    btn.classList.toggle('on', on);
+    label.textContent = on ? 'Music' : 'Muted';
+    btn.setAttribute('aria-pressed', String(on));
+  }
+
+  // Try to go ON BY DEFAULT. Build immediately; resume on first gesture if blocked.
+  function ignite() {
+    build();
+    if (ctx.state === 'suspended') ctx.resume();
+  }
+
+  btn.addEventListener('click', () => {
+    if (!built) { ignite(); muted = false; paint(); return; }
+    if (ctx.state === 'suspended') ctx.resume();
+    muted = !muted;
+    applyGain(); paint();
+  });
+
+  function firstGesture(e) {
+    if (e.target.closest && e.target.closest('#musicToggle')) return;
+    ignite();
+    window.removeEventListener('pointerdown', firstGesture);
+  }
+  window.addEventListener('pointerdown', firstGesture);
+
+  // Optimistically reflect "on", and attempt to build/resume right away.
+  paint();
+  window.addEventListener('load', () => { try { ignite(); } catch (_) {} });
+})();
+</script>
+</body>
+</html>

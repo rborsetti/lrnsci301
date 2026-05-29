@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Flight Engineer's Logbook · Bring Them Home</title>
+<style>
+  @page { size: Letter portrait; margin: 0.55in 0.65in; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: #eceae3; color: #111;
+    font-family: "Courier New", ui-monospace, Menlo, monospace;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .screen-note {
+    max-width: 760px; margin: 22px auto; padding: 14px 18px;
+    background: #fffbe6; border: 1px solid #c9b27a; color: #5a4a22;
+    font-family: -apple-system, system-ui, sans-serif; font-size: 14px; border-radius: 6px;
+  }
+  .screen-note b { color: #222; }
+  .printbtn {
+    display:block; margin: 14px auto 0; padding: 11px 22px; font-size:15px;
+    font-family: system-ui, sans-serif; font-weight:600; cursor:pointer;
+    background:#111; color:#fff; border:none; border-radius:6px;
+  }
+  @media print { .screen-note { display:none; } }
+
+  .page {
+    background:#fff; width:7.2in; min-height:9.7in; margin:18px auto;
+    padding:0.32in 0.4in 0.5in; border:2px solid #111; position:relative;
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after:auto; }
+  @media print { body{background:#fff;} .page{width:auto;min-height:auto;margin:0;border:none;padding:0;} }
+
+  .hdr { display:flex; justify-content:space-between; align-items:flex-end;
+    border-bottom:3px double #111; padding-bottom:7px; }
+  .hdr .doc { font-size:10.5px; letter-spacing:0.16em; }
+  .hdr .sys { font-size:12.5px; font-weight:bold; letter-spacing:0.1em; }
+  .ribbon { font-size:25px; font-weight:bold; letter-spacing:0.04em; margin:8px 0 1px; }
+  .sub { font-size:11.5px; color:#333; margin-bottom:8px; }
+  .stamp {
+    position:absolute; top:0.34in; right:0.4in; border:2px solid #111; border-radius:50%;
+    width:72px; height:72px; display:flex; align-items:center; justify-content:center;
+    text-align:center; font-size:7.5px; font-weight:bold; letter-spacing:0.08em;
+    transform:rotate(-12deg); line-height:1.25; opacity:0.45;
+  }
+
+  /* key/legend */
+  .legend {
+    display:flex; gap:18px; flex-wrap:wrap; font-size:10px; font-weight:bold;
+    letter-spacing:0.04em; border:1px solid #111; padding:6px 10px; margin:6px 0 12px;
+    background:#f6f6f1;
+  }
+  .legend span b { font-size:12px; }
+
+  .block { margin:13px 0; }
+  .label {
+    font-size:10.5px; font-weight:bold; letter-spacing:0.14em;
+    border-bottom:1px solid #111; padding-bottom:3px; margin-bottom:9px;
+  }
+  .instr { font-size:12.5px; line-height:1.55; margin:6px 0; }
+
+  /* action chip */
+  .do { display:flex; align-items:flex-start; gap:9px; font-size:12.5px; line-height:1.5; margin:7px 0; }
+  .chip {
+    flex:0 0 auto; display:inline-block; min-width:54px; text-align:center;
+    background:#111; color:#fff; font-size:10px; font-weight:bold; letter-spacing:0.1em;
+    padding:3px 7px; border-radius:2px; margin-top:1px;
+  }
+
+  /* console copy: obvious empty fields */
+  .copy-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; margin-top:4px; }
+  .kv {
+    border:1.5px solid #111; padding:7px 9px; display:flex;
+    justify-content:space-between; align-items:center; gap:10px; font-size:12px;
+  }
+  .kv .blank {
+    flex:0 0 auto; width:74px; height:26px; border:1.5px dashed #555;
+    background:#fafaf4; display:flex; align-items:center; justify-content:center;
+    font-size:10px; color:#999;
+  }
+  .kv .given { border-style:solid; background:#fff; color:#111; font-weight:bold; font-size:14px; }
+
+  /* work strip: always blank, student marks it */
+  .strip-wrap { margin:12px 0 4px; }
+  .strip {
+    height:60px; border:2px solid #111; position:relative; background:#fff;
+  }
+  .strip.tall { height:74px; }
+  .guide { position:absolute; top:0; bottom:0; border-left:1px dotted #aaa; }
+  .ruler-scale {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    font-size:10px; font-weight:bold; color:#333; margin:3px 1px 0;
+  }
+  .ruler-scale span { width:1px; text-align:center; transform:translateX(-50%); }
+  .ruler-scale span:first-child { transform:translateX(0); }
+  .ruler-scale span:last-child { transform:translateX(-100%); }
+  .foldmark {
+    position:absolute; top:-9px; bottom:-9px; border-left:2px dashed #111;
+  }
+  .foldmark::after {
+    content:"⤢ FOLD"; position:absolute; top:-13px; left:-22px; font-size:8.5px;
+    font-weight:bold; background:#fff; padding:0 3px;
+  }
+  .ziptab {
+    position:absolute; font-size:9px; font-weight:bold; letter-spacing:0.06em;
+    top:50%; transform:translateY(-50%); color:#333;
+  }
+  .endzone {
+    position:absolute; top:0; bottom:0; right:0; border-left:2px solid #111;
+    background:repeating-linear-gradient(45deg,#ddd 0 3px,#fff 3px 8px);
+    display:flex; align-items:center; justify-content:center;
+    font-size:9px; font-weight:bold; text-align:center; padding:2px;
+  }
+  .cut {
+    border-top:2px dashed #111; margin:7px 0 2px; position:relative;
+  }
+  .cut::before {
+    content:"✂ CUT"; position:absolute; left:0; top:-9px; font-size:9px; font-weight:bold;
+    background:#fff; padding:0 4px;
+  }
+  .hand { font-size:11px; font-style:italic; color:#333; margin:5px 0 0; }
+
+  /* numbered boxes the student fills/shades */
+  .boxrow { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+  .bx {
+    width:36px; height:36px; border:1.5px dashed #555; display:flex;
+    align-items:center; justify-content:center; font-size:9px; color:#aaa; background:#fafaf4;
+  }
+  .shade-key {
+    display:inline-flex; align-items:center; gap:6px; font-size:10px; color:#333; margin:6px 0;
+  }
+  .shade-swatch {
+    width:30px; height:18px; border:1.5px solid #111;
+    background:repeating-linear-gradient(45deg,#000 0 2px,#fff 2px 6px);
+  }
+
+  .ansbox {
+    border:2px solid #111; padding:11px 14px; margin-top:14px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .ansbox .q { font-size:12.5px; font-weight:bold; }
+  .ansbox .write {
+    width:130px; height:38px; border:2px solid #111; background:#fafaf4;
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:#aaa;
+  }
+  .ansbox .x { font-size:18px; font-weight:bold; }
+
+  .think { font-size:11.5px; font-style:italic; border-left:3px solid #111; padding-left:10px; margin:11px 0 0; }
+  .freebox {
+    border:2px solid #111; height:120px; margin-top:8px; background:#fff;
+    display:flex; align-items:flex-start; justify-content:flex-start;
+    font-size:11px; color:#bbb; padding:6px 8px;
+  }
+  .foot {
+    position:absolute; bottom:0.26in; left:0.4in; right:0.4in; border-top:1px solid #111;
+    padding-top:5px; font-size:9.5px; display:flex; justify-content:space-between; color:#333;
+  }
+
+  /* cover */
+  .cover { text-align:center; }
+  .cover .big { font-size:38px; font-weight:bold; letter-spacing:0.05em; margin:26px 0 4px; }
+  .cover .mission { font-size:13px; letter-spacing:0.28em; margin-bottom:20px; }
+  .seal {
+    margin:18px auto; border:3px double #111; border-radius:50%; width:120px; height:120px;
+    display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold;
+    letter-spacing:0.1em; text-align:center; line-height:1.5;
+  }
+  .keycard { border:2px solid #111; text-align:left; margin:18px 0; padding:12px 16px; }
+  .keycard h4 { margin:0 0 9px; font-size:12px; letter-spacing:0.14em; }
+  .keyitem { display:flex; align-items:center; gap:12px; font-size:12px; margin:8px 0; }
+  .keyitem .sym {
+    flex:0 0 92px; font-size:10px; font-weight:bold; text-align:center;
+    border:1px solid #111; padding:4px 4px;
+  }
+  .cover ol { text-align:left; font-size:12px; line-height:1.7; margin:14px 4px; padding-left:20px; }
+  .crewline { text-align:left; font-size:12.5px; margin:16px 0; line-height:2.4; }
+  .wline { display:inline-block; min-width:240px; border-bottom:1.5px solid #111; }
+</style>
+</head>
+<body>
+
+<div class="screen-note">
+  <b>Flight Engineer's Logbook.</b> Print double-sided, one per student. Numbers come from the
+  console (phone): you copy them in. Strips are made to be <b>folded and cut by hand</b>. The cover
+  page explains every symbol. Print it.
+  <button class="printbtn" onclick="window.print()">⎙ Print logbook</button>
+</div>
+
+<!-- ========================= COVER ========================= -->
+<section class="page cover">
+  <div class="hdr"><div class="doc">NASA · MANNED SPACECRAFT CENTER</div><div class="sys">FORM FE-13</div></div>
+  <div class="big">FLIGHT ENGINEER'S<br/>LOGBOOK</div>
+  <div class="mission">MISSION · BRING THEM HOME</div>
+  <div class="seal">APOLLO 13<br/>FLIGHT<br/>ENGINEER</div>
+
+  <div class="crewline">
+    CREW NAME: <span class="wline"></span><br/>
+    ENGINEER: <span class="wline"></span>
+  </div>
+
+  <div class="keycard">
+    <h4>HOW TO READ THIS LOGBOOK</h4>
+    <div class="keyitem"><span class="sym">DASHED&nbsp;BOX</span> An empty field. You write a number in it (copied from the console).</div>
+    <div class="keyitem"><span class="sym">SOLID&nbsp;BOX</span> A number is already printed for you. Do not change it.</div>
+    <div class="keyitem"><span class="sym">SHADE</span> Colour in this region with your pencil.</div>
+    <div class="keyitem"><span class="sym">⤢ FOLD</span> Fold the paper on this dashed line and crease it.</div>
+    <div class="keyitem"><span class="sym">✂ CUT</span> Cut along this dashed line with scissors.</div>
+    <div class="keyitem"><span class="sym">▲ MARK</span> Make a tick where you decide the split goes.</div>
+  </div>
+
+  <div style="text-align:left; font-size:12px; line-height:1.65;">
+    <b>EVERY SYSTEM, SAME 4 STEPS:</b>
+    <ol>
+      <li>Read the system on the console screen.</li>
+      <li>Copy its numbers into the dashed boxes on that page.</li>
+      <li>Work the strip <b>by hand</b> until you can see <b>one unit</b>.</li>
+      <li>Enter your answer on the console to restore the system.</li>
+    </ol>
+    <div class="think">The console only checks the answer. This logbook is where you actually
+    figure it out. Every system hides the same move: <b>find the value of one unit.</b></div>
+  </div>
+  <div class="foot"><span>FE-13 · BRING THEM HOME</span><span>COVER</span></div>
+</section>
+
+<!-- ===================== SYSTEM 01: x + a = b ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 01 / 10</div></div>
+  <div class="ribbon">Restore power</div>
+  <div class="sub">part you have + part you must find = the whole</div>
+  <div class="stamp">PWR<br/>CRITICAL</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span><b>▨ shade</b> = pencil in</span><span><b>▲</b> = mark the split</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Volts needed (WHOLE) <span class="blank">write</span></div>
+      <div class="kv">Volts you already have <span class="blank">write</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · BUILD IT: 1 BOX = 1 VOLT</div>
+    <div class="do"><span class="chip">SHADE</span> Shade boxes from the left until the shaded count equals the volts you already have.</div>
+    <div class="boxrow">
+      <div class="bx">1</div><div class="bx">2</div><div class="bx">3</div><div class="bx">4</div>
+      <div class="bx">5</div><div class="bx">6</div><div class="bx">7</div><div class="bx">8</div>
+      <div class="bx">9</div><div class="bx">10</div><div class="bx">11</div><div class="bx">12</div>
+      <div class="bx">13</div><div class="bx">14</div><div class="bx">15</div><div class="bx">16</div>
+    </div>
+    <div class="shade-key"><span class="shade-swatch"></span> = shaded (volts you have)</div>
+    <div class="do"><span class="chip">COUNT</span> Count the boxes you did NOT shade. That count is x.</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = backup volts to add</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="think">x is just the rest of the whole, after the part you already had.</div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 01</span></div>
+</section>
+
+<!-- ===================== SYSTEM 02: x + a = b ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 02 / 10</div></div>
+  <div class="ribbon">Maintain oxygen</div>
+  <div class="sub">tanks online + tanks to find = tanks needed</div>
+  <div class="stamp">LIFE<br/>SUPPORT</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span><b>▨ shade</b> = pencil in</span><span><b>▲</b> = mark the split</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Tanks needed (WHOLE) <span class="blank">write</span></div>
+      <div class="kv">Tanks still connected <span class="blank">write</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · THE WHOLE BAR = NEEDED. SPLIT IT.</div>
+    <div class="do"><span class="chip">▲ MARK</span> The dotted ticks below are a ruler. Make a heavy tick where "tanks connected" ends.</div>
+    <div class="do"><span class="chip">SHADE</span> Shade everything LEFT of your mark (tanks connected). The blank part right of it is x.</div>
+    <div class="strip-wrap">
+      <div class="strip tall">
+        <div class="guide" style="left:10%"></div><div class="guide" style="left:20%"></div>
+        <div class="guide" style="left:30%"></div><div class="guide" style="left:40%"></div>
+        <div class="guide" style="left:50%"></div><div class="guide" style="left:60%"></div>
+        <div class="guide" style="left:70%"></div><div class="guide" style="left:80%"></div>
+        <div class="guide" style="left:90%"></div>
+        <div class="ziptab" style="left:8px;">◀ connected (shade)</div>
+        <div class="ziptab" style="right:8px;">x = bring online ▶</div>
+      </div>
+      <div class="ruler-scale">
+        <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+        <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+      </div>
+    </div>
+    <div class="hand">x = needed − connected. The gap past your mark is the answer.</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = backup tanks to bring online</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 02</span></div>
+</section>
+
+<!-- ===================== SYSTEM 03: b − x = a ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 03 / 10</div></div>
+  <div class="ribbon">Patch the fuel leak</div>
+  <div class="sub">what you started with − what leaked = what is left</div>
+  <div class="stamp">FUEL<br/>LEAK</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span><b>▨ shade</b> = pencil in</span><span><b>▲</b> = mark the split</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Started with (WHOLE) <span class="blank">write</span></div>
+      <div class="kv">Left in tank now <span class="blank">write</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · FULL BAR = STARTED. SPLIT INTO "STILL HERE" + "LEAKED".</div>
+    <div class="do"><span class="chip">▲ MARK</span> Tick where the fuel "still in tank" ends.</div>
+    <div class="do"><span class="chip">SHADE</span> Shade LEFT of your mark = still in tank. The blank right side is what leaked = x.</div>
+    <div class="strip-wrap">
+      <div class="strip tall">
+        <div class="guide" style="left:10%"></div><div class="guide" style="left:20%"></div>
+        <div class="guide" style="left:30%"></div><div class="guide" style="left:40%"></div>
+        <div class="guide" style="left:50%"></div><div class="guide" style="left:60%"></div>
+        <div class="guide" style="left:70%"></div><div class="guide" style="left:80%"></div>
+        <div class="guide" style="left:90%"></div>
+        <div class="ziptab" style="left:8px;">◀ still in tank (shade)</div>
+        <div class="ziptab" style="right:8px;">x = leaked ▶</div>
+      </div>
+      <div class="ruler-scale">
+        <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+        <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+      </div>
+    </div>
+    <div class="hand">x = started − left.</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = gallons leaked</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 03</span></div>
+</section>
+
+<!-- ===================== SYSTEM 04: 2x = b  (FOLD/CUT) ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 04 / 10</div></div>
+  <div class="ribbon">Rewire the mainframe</div>
+  <div class="sub">the whole is made of equal units. find one unit.</div>
+  <div class="stamp">MAIN<br/>FRAME</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span><b>⤢</b> = fold here</span><span><b>✂</b> = cut here</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Total power needed (WHOLE) <span class="blank">write</span></div>
+      <div class="kv">Number of wires <span class="blank given">2</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · THE KEY MOVE: FOLD, THEN CUT</div>
+    <div class="do"><span class="chip">⤢ FOLD</span> This strip is the whole power. Fold it in half on the dashed line. Crease hard.</div>
+    <div class="do"><span class="chip">✂ CUT</span> Cut along the crease. You now hold two equal pieces.</div>
+    <div class="strip-wrap">
+      <div class="strip tall">
+        <div class="foldmark" style="left:50%"></div>
+        <div class="ziptab" style="left:8px;">ONE WIRE</div>
+        <div class="ziptab" style="right:8px;">ONE WIRE</div>
+      </div>
+    </div>
+    <div class="cut"></div>
+    <div class="do"><span class="chip">WRITE</span> One cut piece = one wire's power = x. Its value is the whole ÷ 2.</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = power per wire</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="think">Folding into equal parts IS dividing. One fold gives you one unit.</div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 04</span></div>
+</section>
+
+<!-- ===================== SYSTEM 05: x ÷ k = r  (BUILD FROM UNIT) ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 05 / 10</div></div>
+  <div class="ribbon">Signal Houston</div>
+  <div class="sub">build the whole out of equal units</div>
+  <div class="stamp">COMMS</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span><b>✂</b> = cut here</span><span>then lay pieces end to end</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Channels <span class="blank given">3</span></div>
+      <div class="kv">Strength each channel needs <span class="blank">write</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · ONE UNIT = ONE CHANNEL. BUILD THE WHOLE.</div>
+    <div class="do"><span class="chip">✂ CUT</span> Cut out all three channel strips below.</div>
+    <div class="do"><span class="chip">BUILD</span> Lay the 3 strips end to end. Their total length is the whole signal = x.</div>
+    <div class="strip-wrap"><div class="strip"><div class="cut" style="margin:0;border:none;"></div><div class="ziptab" style="left:8px;">CHANNEL 1 (one unit)</div></div></div>
+    <div class="strip-wrap"><div class="strip"><div class="ziptab" style="left:8px;">CHANNEL 2 (one unit)</div></div></div>
+    <div class="strip-wrap"><div class="strip"><div class="ziptab" style="left:8px;">CHANNEL 3 (one unit)</div></div></div>
+    <div class="hand">3 equal units joined = the whole. x = one unit × channels.</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = total signal strength</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 05</span></div>
+</section>
+
+<!-- ===================== SYSTEM 06: kx + c = t ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 06 / 10</div></div>
+  <div class="ribbon">Calibrate scanner</div>
+  <div class="sub">two steps: remove the part that is NOT units, then fold</div>
+  <div class="stamp">NAV<br/>SCAN</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span><b>✂</b> = cut off the extra</span><span><b>⤢</b> = fold the rest</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Final reading (WHOLE) <span class="blank">write</span></div>
+      <div class="kv">Times the true angle <span class="blank given">3</span></div>
+      <div class="kv">Extra drift added <span class="blank">write</span></div>
+      <div class="kv" style="border:none;"></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · STEP A: CUT OFF THE DRIFT</div>
+    <div class="do"><span class="chip">✂ CUT</span> The hatched end is the drift. It is not made of units. Cut it off and set it aside.</div>
+    <div class="strip-wrap">
+      <div class="strip tall">
+        <div class="ziptab" style="left:8px;">3 equal units (keep this)</div>
+        <div class="endzone" style="width:24%;">DRIFT<br/>cut off</div>
+      </div>
+    </div>
+    <div class="do"><span class="chip">⤢ FOLD</span> STEP B: fold the kept piece into 3 equal parts. One part = x.</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = true scanner angle</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="think">Strip the extra first. Then unitize what is left.</div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 06</span></div>
+</section>
+
+<!-- ===================== SYSTEM 07: kx − c = t ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 07 / 10</div></div>
+  <div class="ribbon">Realign coordinates</div>
+  <div class="sub">two steps: a piece was removed, draw it back, then fold</div>
+  <div class="stamp">NAV<br/>COORD</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span><b>▨ shade</b> = the added-back piece</span><span><b>⤢</b> = fold</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Target reading <span class="blank">write</span></div>
+      <div class="kv">Times the true value <span class="blank given">2</span></div>
+      <div class="kv">Correction removed <span class="blank">write</span></div>
+      <div class="kv" style="border:none;"></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · STEP A: ADD THE REMOVED PIECE BACK</div>
+    <div class="do"><span class="chip">SHADE</span> The bar is the target reading. Draw and shade the "correction" back on at the right end.</div>
+    <div class="strip-wrap">
+      <div class="strip tall">
+        <div class="ziptab" style="left:8px;">target reading</div>
+        <div class="endzone" style="width:20%; background:repeating-linear-gradient(45deg,#fff 0 3px,#fff 3px 8px);">+ add<br/>back</div>
+      </div>
+    </div>
+    <div class="do"><span class="chip">⤢ FOLD</span> STEP B: that full bar is 2 units. Fold in half. One half = x.</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = true coordinate</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 07</span></div>
+</section>
+
+<!-- ===================== SYSTEM 08: x ÷ k + c = t  (less guided) ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 08 / 10</div></div>
+  <div class="ribbon">Set ship speed</div>
+  <div class="sub">you know the moves now. fewer hints.</div>
+  <div class="stamp">VELOCITY</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span>draw your own bar in the box</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Monitor reading <span class="blank">write</span></div>
+      <div class="kv">Split across boosters <span class="blank given">4</span></div>
+      <div class="kv">Bumped up by <span class="blank">write</span></div>
+      <div class="kv" style="border:none;"></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · MODEL IT YOURSELF</div>
+    <div class="instr">Reading = (speed split 4 ways) + a bump. Which piece is NOT made of units?
+      Remove it first, then unitize. Draw the bar, mark your cut and folds.</div>
+    <div class="freebox">draw here</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = ship's current speed</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 08</span></div>
+</section>
+
+<!-- ===================== SYSTEM 09: 2x − c = t  (minimal) ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 09 / 10</div></div>
+  <div class="ribbon">Break through the atmosphere</div>
+  <div class="sub">almost home. model it yourself.</div>
+  <div class="stamp">RE-ENTRY</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span>show every step in the box</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Correct entry reading <span class="blank">write</span></div>
+      <div class="kv">Pointed down by <span class="blank">write</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · YOUR MODEL + YOUR REASONING</div>
+    <div class="instr">The angle was doubled, then pointed down (subtracted) to reach the reading. Undo it.
+      Write each step you take.</div>
+    <div class="freebox">work here: bar, words, or equation</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = original entry angle</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 09</span></div>
+</section>
+
+<!-- ===================== SYSTEM 10: x + a = 2x ===================== -->
+<section class="page">
+  <div class="hdr"><div class="doc">FLIGHT ENGINEER'S LOGBOOK</div><div class="sys">SYSTEM 10 / 10</div></div>
+  <div class="ribbon">Land the ship</div>
+  <div class="sub">final system. two ways to describe one speed. line them up.</div>
+  <div class="stamp">SPLASH<br/>DOWN</div>
+  <div class="legend"><span><b>▢ dashed</b> = you write</span><span><b>▨ shade</b> = the "extra"</span><span>compare the two bars</span></div>
+
+  <div class="block">
+    <div class="label">1 · COPY FROM CONSOLE</div>
+    <div class="copy-grid">
+      <div class="kv">Units faster than safe speed <span class="blank">write</span></div>
+      <div class="kv">Current = ? × safe speed <span class="blank given">2</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="label">2 · TWO BARS, SAME LENGTH</div>
+    <div class="instr">Both bars are the current speed. Top = safe speed + extra. Bottom = two safe speeds.</div>
+    <div class="strip-wrap">
+      <div class="strip">
+        <div class="guide" style="left:50%"></div>
+        <div class="ziptab" style="left:8px;">SAFE SPEED (x)</div>
+        <div class="ziptab" style="right:8px;">+ EXTRA (shade)</div>
+      </div>
+    </div>
+    <div class="strip-wrap">
+      <div class="strip">
+        <div class="foldmark" style="left:50%"></div>
+        <div class="ziptab" style="left:8px;">SAFE SPEED (x)</div>
+        <div class="ziptab" style="right:8px;">SAFE SPEED (x)</div>
+      </div>
+    </div>
+    <div class="do"><span class="chip">COVER</span> Cover one "SAFE SPEED (x)" on each bar. What is left? The shaded "extra" equals one safe speed. That is x.</div>
+  </div>
+
+  <div class="ansbox"><span class="q">x = safe landing speed</span><span class="x">x =</span><span class="write">write</span></div>
+  <div class="think">When both sides describe the same whole, matching parts cancel. What remains is the unit.</div>
+  <div class="foot"><span>FE-13</span><span>SYSTEM 10 · SPLASHDOWN</span></div>
+</section>
+
+</body>
+</html>
