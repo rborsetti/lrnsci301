@@ -18,7 +18,6 @@ Live: https://lrnsci301.rborsetti.com
   display, incl. synthesized ambient music), `play.html` (team phone console),
   `style.css`.
 - **`logbook/logbook.html`** — the printable Flight Engineer's Logbook.
-- **`presentation/`** — final-showcase deck spec + asset bundle.
 
 ## Run locally
 
